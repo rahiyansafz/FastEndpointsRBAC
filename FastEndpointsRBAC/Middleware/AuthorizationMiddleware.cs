@@ -20,14 +20,15 @@ public class AuthorizationMiddleware : IMiddleware
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var endpoint = context.GetEndpoint();
-        var authorizationPolicy = endpoint?.Metadata.GetMetadata<AuthorizationPolicyMetadata>();
 
-        // Skip authorization for endpoints with AllowAnonymous attribute
+        // Check for AllowAnonymous attribute
         if (endpoint?.Metadata.GetMetadata<AllowAnonymousAttribute>() != null)
         {
             await next(context);
             return;
         }
+
+        var authorizationPolicy = endpoint?.Metadata.GetMetadata<AuthorizationPolicyMetadata>();
 
         if (authorizationPolicy != null)
         {

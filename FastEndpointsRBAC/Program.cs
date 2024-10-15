@@ -52,8 +52,8 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
-app.UseMiddleware<AuthorizationMiddleware>();
 app.UseAuthorization();
+app.UseMiddleware<AuthorizationMiddleware>();
 
 app.UseSwaggerGen();
 
