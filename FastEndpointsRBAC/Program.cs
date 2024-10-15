@@ -63,6 +63,6 @@ app.UseFastEndpoints(c =>
     c.Serializer.Options.PropertyNamingPolicy = null;
 });
 
-app.Run();
-
 await InitializeDb.Initialize(app.Services);
+
+app.Run();

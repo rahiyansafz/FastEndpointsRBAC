@@ -58,7 +58,7 @@ public static class InitializeDb
             {
                 Username = "admin",
                 Email = "admin@example.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("adminpassword"),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin@example.com"),
                 IsActive = true
             };
 
