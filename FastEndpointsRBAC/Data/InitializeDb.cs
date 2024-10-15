@@ -8,6 +8,7 @@ public static class InitializeDb
 {
     public static async Task Initialize(IServiceProvider serviceProvider)
     {
+        Console.WriteLine("Initializing database...");
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 

@@ -33,17 +33,35 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
             .ThenInclude(ur => ur.Role)
             .ThenInclude(r => r.RolePermissions)
             .ThenInclude(rp => rp.Permission)
-            .FirstOrDefaultAsync(u => u.Username == req.Username, ct);
+            .FirstOrDefaultAsync(u => u.Username == req.Username || u.Email == req.Username, ct);
 
-        if (user == null || !BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
+        if (user == null)
         {
-            await SendUnauthorizedAsync(ct);
+            await SendAsync(new LoginResponse
+            {
+                Success = false,
+                Message = "User not found"
+            }, 200, ct);
+            return;
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
+        {
+            await SendAsync(new LoginResponse
+            {
+                Success = false,
+                Message = "Invalid password"
+            }, 200, ct);
             return;
         }
 
         if (!user.IsActive)
         {
-            await SendForbiddenAsync(ct);
+            await SendAsync(new LoginResponse
+            {
+                Success = false,
+                Message = "User account is not active"
+            }, 200, ct);
             return;
         }
 
@@ -63,8 +81,9 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
         await SendAsync(new LoginResponse
         {
+            Success = true,
             Token = token,
             RefreshToken = refreshToken
-        }, cancellation: ct);
+        }, 200, ct);
     }
 }

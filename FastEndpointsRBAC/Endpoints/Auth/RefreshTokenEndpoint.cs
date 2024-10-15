@@ -37,7 +37,11 @@ public class RefreshTokenEndpoint : Endpoint<RefreshTokenRequest, LoginResponse>
 
         if (user == null)
         {
-            await SendUnauthorizedAsync(ct);
+            await SendAsync(new LoginResponse
+            {
+                Success = false,
+                Message = "Invalid or expired refresh token"
+            }, 200, ct);
             return;
         }
 
@@ -57,8 +61,9 @@ public class RefreshTokenEndpoint : Endpoint<RefreshTokenRequest, LoginResponse>
 
         await SendAsync(new LoginResponse
         {
+            Success = true,
             Token = token,
             RefreshToken = refreshToken
-        }, cancellation: ct);
+        }, 200, ct);
     }
 }
